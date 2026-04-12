@@ -4,9 +4,10 @@ const express = require("express");
 const cors = require("cors");
 const routes = require("./routes");
 const blendRouter = require("./routes/blend");
+const studioRouter = require("./routes/studio");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use((req, _res, next) => {
 
 app.use("/", routes);
 app.use("/api", blendRouter);
+app.use("/api", studioRouter);
 
 app.get("/", (_req, res) => {
   res.json({ message: "LangUp backend is running" });
