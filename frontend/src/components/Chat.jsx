@@ -55,11 +55,30 @@ function HoverWord({ target, native, language, token, onHovered }) {
   )
 }
 
+// Normalize a string for comparison: lowercase, trim, strip diacritics
+function normalize(str) {
+  return str.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+
+// Check if the answer is correct:
+// 1. Exact normalized match against the target word
+// 2. OR matches any comma-separated variant in the native slot (e.g. "text, story")
+function isCorrectAnswer(input, target, native) {
+  const norm = normalize(input)
+  if (norm === normalize(target)) return true
+  // Also accept if user typed an English synonym listed in the native slot
+  const nativeVariants = native.split(/[,/]/).map(v => normalize(v.trim()))
+  return nativeVariants.includes(norm)
+}
+
 // Fill-in-the-blank word for weak words — user types the target word
 function QuizWord({ target, native, language, token, onHovered }) {
   const [status, setStatus] = useState('idle') // 'idle' | 'correct' | 'incorrect'
   const [input, setInput] = useState('')
   const inputRef = useRef(null)
+
+  // Show all native variants as the ghost hint (e.g. "text / story")
+  const nativeHint = native.split(/[,/]/).map(v => v.trim()).join(' / ')
 
   function fireConfetti() {
     if (!inputRef.current) return
@@ -82,13 +101,13 @@ function QuizWord({ target, native, language, token, onHovered }) {
 
   function submit() {
     if (status !== 'idle' || !input.trim()) return
-    const correct = input.trim().toLowerCase() === target.toLowerCase()
+    const correct = isCorrectAnswer(input, target, native)
     setStatus(correct ? 'correct' : 'incorrect')
     recordAnswer(token, target, native, language, correct).catch(() => {})
     if (correct) {
       fireConfetti()
     } else {
-      onHovered?.() // counts as needing help
+      onHovered?.()
     }
   }
 
@@ -96,20 +115,25 @@ function QuizWord({ target, native, language, token, onHovered }) {
     return <span className="quiz-word quiz-word--correct">{target}</span>
   }
   if (status === 'incorrect') {
-    return <span className="quiz-word quiz-word--incorrect" title={`Correct: ${target}`}>{target}</span>
+    return (
+      <span className="quiz-word quiz-word--incorrect" title={`Correct answer: ${target}`}>
+        {target}
+      </span>
+    )
   }
 
   return (
     <span className="quiz-word quiz-word--idle">
+      <span className="quiz-ghost" aria-hidden="true">{nativeHint}</span>
       <input
         ref={inputRef}
         className="quiz-input"
         value={input}
         onChange={e => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="?"
-        size={Math.max(3, target.length)}
-        aria-label={`Fill in the blank: ${native}`}
+        placeholder=""
+        size={Math.max(4, nativeHint.length + 1)}
+        aria-label={`Type the ${language} word for: ${nativeHint}`}
       />
     </span>
   )

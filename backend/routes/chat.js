@@ -39,7 +39,8 @@ CRITICAL FORMAT RULE — no exceptions:
 Every ${target_lang} word you include MUST be wrapped in double curly braces: {{word|translation}}
 The format is: opening double brace, the ${target_lang} word, a pipe character |, the English translation, closing double brace.
 
-✅ CORRECT: "This {{texto|text}} raises {{interesantes|interesting}} points about {{política|politics}}."
+✅ CORRECT: "This {{texto|text, story}} raises {{interesantes|interesting}} points about {{política|politics}}."
+✅ CORRECT multiple translations: if a word has more than one common English meaning, list them comma-separated in the translation slot: {{banco|bank, bench}}, {{tiempo|time, weather}}.
 ❌ WRONG bare word: "This texto raises interesantes points."
 ❌ WRONG parentheses: "This texto (text) raises interesting points."
 ❌ WRONG any other format: never use brackets, slashes, or any other notation.

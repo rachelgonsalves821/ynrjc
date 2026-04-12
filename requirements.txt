@@ -1,0 +1,49 @@
+# LangUp — Project Requirements
+# ================================
+
+# Runtime
+# -------
+# Node.js >= 18.0.0  (uses native fetch, ES2020+)
+# npm    >= 9.0.0
+
+# External Services
+# -----------------
+# Supabase project  — https://supabase.com
+#   Tables: run backend/migrations/001_init_langup_tables.sql
+#           then   backend/migrations/002_add_familiarity_fields.sql
+#   Auth:   disable "Confirm email" for local dev (Authentication > Providers > Email)
+#
+# OpenAI account    — https://platform.openai.com
+#   Models used: gpt-4o-mini (chat + blend)
+
+# Environment Variables  (backend/.env)
+# --------------------------------------
+PORT=3000
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_KEY=your_supabase_service_role_key
+OPENAI_API_KEY=your_openai_api_key
+
+# Backend Dependencies  (auto-installed via npm install)
+# -------------------------------------------------------
+# @supabase/supabase-js ^2.57.4
+# cors                  ^2.8.5
+# dotenv                ^17.2.3
+# express               ^5.1.0
+# express-validator     ^7.3.0
+# openai                ^4.104.0
+
+# Frontend Dependencies  (auto-installed via npm install)
+# --------------------------------------------------------
+# react                 ^19.0.0
+# react-dom             ^19.0.0
+# canvas-confetti       ^1.9.3
+# vite                  ^8.0.0
+
+# Setup
+# -----
+# 1. cd backend && npm install
+# 2. cp backend/.env.example backend/.env  (fill in your keys)
+# 3. Run both SQL migrations in Supabase SQL Editor
+# 4. cd backend && node index.js
+# 5. cd frontend && npm install && npm run dev
