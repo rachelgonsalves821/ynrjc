@@ -1,0 +1,11 @@
+# Environment variables — never commit
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
